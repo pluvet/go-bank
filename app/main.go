@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pluvet/go-bank/routes"
+	"github.com/pluvet/go-bank/app/routes"
   )
 
 func main() {

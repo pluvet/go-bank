@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+    web:
+        build: .
+        ports:
+            - 8080:8080
+        restart: unless-stopped
+        expose:
+            - 8080
+        command: ["go","run","main.go"]
+        depends_on: 
+            - pgdb
+        volumes:
+            - ./app:/app/
+
+    pgdb:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: 123456
+            POSTGRES_DB: bank
+        volumes:
+            - ./postgres:/var/lib/postgresql/data
+        ports: 
+            - 5434:5432
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadmin4_container
+        restart: always
+        ports:
+            - "8888:80"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
+            PGADMIN_DEFAULT_PASSWORD: strong-password
+        volumes:
+            - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
