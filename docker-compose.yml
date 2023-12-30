@@ -11,8 +11,8 @@ services:
         depends_on: 
             - pgdb
         volumes:
-            - ./app:/app/"
-        command: ["go", "run", "main.go"]
+            - "./app:/app/"
+        command: ["go", "build", "-o", "main", "."]
 
     pgdb:
         image: postgres
