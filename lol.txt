@@ -1,0 +1,2 @@
+/usr/local/go/src/github.com/pluvet/go-bank/app/routes (from $GOROOT)
+/go/src/github.com/pluvet/go-bank/app/routes (from $GOPATH)

@@ -4,16 +4,17 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	id       int     `json:"id" gorm:"primary_key"`
-	Name     string  `json:"name"`
-	Email    string  `json:"email"`
-	Password string  `json:"password"`
-	Account  Account `gorm:"foreignKey:id"`
+	id       int    `json:"id" gorm:"primary_key"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Account  *Account
 }
 
 type Account struct {
 	gorm.Model
 	id      int     `json:"id" gorm:"primary_key"`
-	user_id int     `gorm:"foreignKey:id"`
-	Balance float32 `json:"balance"`
+	Balance float32 `json:"balance" default:0`
+	UserID  uint64
+	User    User
 }

@@ -3,21 +3,20 @@ package events
 import (
 	"sync"
 
-	"github.com/gin-gonic/gin"
 	"github.com/pluvet/go-bank/app/config"
 	"github.com/pluvet/go-bank/app/models"
 )
 
-func createAccountEvent(userId int) {
+func CreateAccountEvent(userId uint) {
 	var wg sync.WaitGroup
 	wg.Add(1)
-	createAccountHandler(&wg, userId)
+	CreateAccountHandler(&wg, userId)
 }
 
-func createAccountHandler(wg *sync.WaitGroup, c *gin.Context, userId int) {
+func CreateAccountHandler(wg *sync.WaitGroup, userId uint) {
 	var account models.Account
-	account.user_id = userId
-	c.BindJSON(&account)
+	account.Balance = 0
+	account.UserID = uint64(userId)
 	config.DB.Create(&account)
 	defer wg.Done()
 }
