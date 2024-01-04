@@ -1,17 +1,26 @@
 package events
 
 import (
-	"github.com/pluvet/go-bank/app/config"
-	"github.com/pluvet/go-bank/app/models"
+	"github.com/pluvet/go-bank/app/handlers"
 )
 
-func CreateAccountEvent(userId uint) {
-	go CreateAccountHandler(userId)
+type Event interface {
+	CreateAccountEvent()
 }
 
-func CreateAccountHandler(userId uint) {
-	var account models.Account
-	account.Balance = 0
-	account.UserID = uint64(userId)
-	config.DB.Create(&account)
+type AccountEvent struct {
+	Event
+	handler handlers.Handler
+	userID  uint
+}
+
+func NewEvent(handler handlers.Handler, userID uint) Event {
+	var a = new(AccountEvent)
+	a.handler = handler
+	a.userID = userID
+	return a
+}
+
+func (a *AccountEvent) CreateAccountEvent() {
+	go a.handler.AccountCreate(a.userID)
 }
