@@ -7,4 +7,5 @@ import (
 
 func UserRoute(r *gin.Engine) {
 	r.POST("/user", controller.CreateUser)
+	r.POST("/account/:id/deposit", controller.AccountDeposit)
 }

@@ -18,3 +18,16 @@ type Account struct {
 	UserID  uint64
 	User    User
 }
+
+func (a *Account) Deposit(amount float32) {
+	a.Balance = a.Balance + amount
+}
+
+func (a *Account) Withdraw(amount float32) {
+	if amount <= a.Balance {
+		a.Balance = a.Balance - amount
+	} else {
+
+	}
+
+}

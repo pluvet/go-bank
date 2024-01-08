@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"sync"
+
 	"github.com/pluvet/go-bank/app/config"
 	"github.com/pluvet/go-bank/app/eventPublisher"
 	"github.com/pluvet/go-bank/app/events"
@@ -16,7 +18,8 @@ func NewAccountHandler() *AccountHandler {
 	return a
 }
 
-func (a *AccountHandler) ReactEvent(event eventPublisher.Event) {
+func (a *AccountHandler) ReactEvent(event eventPublisher.Event, wg *sync.WaitGroup) {
+	defer wg.Done()
 	switch event := event.(type) {
 	case *events.EventUserCreated:
 		a.UserID = event.UserID
