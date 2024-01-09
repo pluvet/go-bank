@@ -9,26 +9,26 @@ type Event interface {
 }
 
 type Handler interface {
-	ReactEvent(Event, *sync.WaitGroup)
+	HandleEvent(Event, *sync.WaitGroup)
 }
 
 type EventPublisher struct {
-	EventName string
+	handlers map[string][]Handler
 }
 
-func NewEventPublisher() *EventPublisher {
+func NewEventPublisher(handlers map[string][]Handler) *EventPublisher {
 	var eventPublisher = new(EventPublisher)
+	eventPublisher.handlers = handlers
 	return eventPublisher
 }
 
-func (e *EventPublisher) NewEvent(handlers map[string][]Handler, event Event) {
+func (e *EventPublisher) NewEvent(event Event) {
 	var wg sync.WaitGroup
-	e.EventName = event.GetName()
-	eventHandlers := handlers[e.EventName]
+	eventHandlers := e.handlers[event.GetName()]
 	for i := range eventHandlers {
 		wg.Add(1)
 		var handler = eventHandlers[i]
-		go handler.ReactEvent(event, &wg)
+		go handler.HandleEvent(event, &wg)
 	}
 	wg.Wait()
 }

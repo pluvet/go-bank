@@ -3,10 +3,9 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pluvet/go-bank/app/config"
-	"github.com/pluvet/go-bank/app/eventPublisher"
 	"github.com/pluvet/go-bank/app/events"
-	"github.com/pluvet/go-bank/app/handlers"
 	"github.com/pluvet/go-bank/app/models"
+	"github.com/pluvet/go-bank/app/publisher"
 )
 
 func CreateUser(c *gin.Context) {
@@ -14,14 +13,8 @@ func CreateUser(c *gin.Context) {
 	c.BindJSON(&user)
 	config.DB.Create(&user)
 
-	// logic event
 	var eventUserCreated = events.NewEventUserCreated(user.ID)
-	accountHandler := handlers.NewAccountHandler()
-	var accountHandlers = map[string][]eventPublisher.Handler{
-		eventUserCreated.GetName(): {accountHandler},
-	}
-	eventPublisher := new(eventPublisher.EventPublisher)
-	eventPublisher.NewEvent(accountHandlers, eventUserCreated)
+	go publisher.EVENTPUBLISHER.NewEvent(eventUserCreated)
 
 	c.JSON(200, &user)
 }

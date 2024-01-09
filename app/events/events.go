@@ -33,3 +33,19 @@ func NewEventAccountBalanceIncreased(addedBalance float32, currentBalance float3
 func (e *EventAccountBalanceIncreased) GetName() string {
 	return reflect.TypeOf(e).String()
 }
+
+type EventAccountBalanceDecreased struct {
+	WithdrawBalance float32
+	CurrentBalance  float32
+}
+
+func NewEventAccountBalanceDecreased(addedBalance float32, currentBalance float32) *EventAccountBalanceDecreased {
+	var eventAccountBalanceDecreased = new(EventAccountBalanceDecreased)
+	eventAccountBalanceDecreased.WithdrawBalance = addedBalance
+	eventAccountBalanceDecreased.CurrentBalance = currentBalance
+	return eventAccountBalanceDecreased
+}
+
+func (e *EventAccountBalanceDecreased) GetName() string {
+	return reflect.TypeOf(e).String()
+}

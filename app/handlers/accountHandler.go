@@ -9,27 +9,19 @@ import (
 	"github.com/pluvet/go-bank/app/models"
 )
 
-type AccountHandler struct {
-	UserID int
-}
+type AccountHandler struct{}
 
-func NewAccountHandler() *AccountHandler {
-	var a = new(AccountHandler)
-	return a
-}
-
-func (a *AccountHandler) ReactEvent(event eventPublisher.Event, wg *sync.WaitGroup) {
+func (a *AccountHandler) HandleEvent(event eventPublisher.Event, wg *sync.WaitGroup) {
 	defer wg.Done()
-	switch event := event.(type) {
-	case *events.EventUserCreated:
-		a.UserID = event.UserID
+	eventUserCreated, ok := event.(*events.EventUserCreated)
+	if ok {
+		a.accountCreate(eventUserCreated.UserID)
 	}
-	a.AccountCreate()
 }
 
-func (a *AccountHandler) AccountCreate() {
+func (a *AccountHandler) accountCreate(userID int) {
 	var account models.Account
 	account.Balance = 0
-	account.UserID = uint64(a.UserID)
+	account.UserID = uint64(userID)
 	config.DB.Create(&account)
 }
