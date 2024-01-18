@@ -1,4 +1,4 @@
-package eventPublisher
+package eventpublisher
 
 import (
 	"sync"

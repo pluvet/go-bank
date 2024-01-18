@@ -1,19 +1,18 @@
 package publisher
 
 import (
-	"github.com/pluvet/go-bank/app/eventPublisher"
+	"github.com/pluvet/go-bank/app/eventpublisher"
 	"github.com/pluvet/go-bank/app/events"
 	"github.com/pluvet/go-bank/app/handlers"
 )
 
-var EVENTPUBLISHER *eventPublisher.EventPublisher
+var EventPublisher *eventpublisher.EventPublisher
 
 func Init() {
 	var eventUserCreated = new(events.EventUserCreated)
 	accountHandler := new(handlers.AccountHandler)
-	var accountHandlers = map[string][]eventPublisher.Handler{
+	var accountHandlers = map[string][]eventpublisher.Handler{
 		eventUserCreated.GetName(): {accountHandler},
 	}
-	eventPublisher := eventPublisher.NewEventPublisher(accountHandlers)
-	EVENTPUBLISHER = eventPublisher
+	EventPublisher = eventpublisher.NewEventPublisher(accountHandlers)
 }

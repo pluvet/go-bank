@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -23,11 +27,18 @@ func (a *Account) Deposit(amount float32) {
 	a.Balance = a.Balance + amount
 }
 
-func (a *Account) Withdraw(amount float32) {
-	if amount <= a.Balance {
-		a.Balance = a.Balance - amount
-	} else {
-
+func (a *Account) Withdraw(amount float32) error {
+	if amount > a.Balance {
+		return new(WithdrawError)
 	}
+	a.Balance = a.Balance - amount
+	return nil
+}
 
+type WithdrawError struct {
+	name string
+}
+
+func (w WithdrawError) Error() string {
+	return fmt.Sprintf("the requested withdraw amount is bigger than your actual balance %s", w.name)
 }
