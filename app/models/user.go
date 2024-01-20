@@ -35,10 +35,8 @@ func (a *Account) Withdraw(amount float32) error {
 	return nil
 }
 
-type WithdrawError struct {
-	name string
-}
+type WithdrawError struct{}
 
 func (w WithdrawError) Error() string {
-	return fmt.Sprintf("the requested withdraw amount is bigger than your actual balance %s", w.name)
+	return fmt.Sprintf("the requested withdraw amount is bigger than your actual balance")
 }

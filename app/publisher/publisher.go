@@ -6,13 +6,14 @@ import (
 	"github.com/pluvet/go-bank/app/handlers"
 )
 
-var EventPublisher *eventpublisher.EventPublisher
+var eventPublisher *eventpublisher.EventPublisher
 
-func Init() {
-	var eventUserCreated = new(events.EventUserCreated)
-	accountHandler := new(handlers.AccountHandler)
-	var accountHandlers = map[string][]eventpublisher.Handler{
-		eventUserCreated.GetName(): {accountHandler},
+func GetEventPublisher() *eventpublisher.EventPublisher {
+	if eventPublisher == nil {
+		var accountHandlers = map[string][]eventpublisher.Handler{
+			new(events.EventUserCreated).GetName(): {new(handlers.AccountHandler)},
+		}
+		eventPublisher = eventpublisher.NewEventPublisher(accountHandlers)
 	}
-	EventPublisher = eventpublisher.NewEventPublisher(accountHandlers)
+	return eventPublisher
 }

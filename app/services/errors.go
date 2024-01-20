@@ -4,28 +4,29 @@ import (
 	"fmt"
 )
 
-type CreateError struct {
+type ErrorCreatingRecordInDB struct {
 	Model string
 }
 
-func (e CreateError) Error() string {
+// ErrorCreatingRecordInDB
+func (e ErrorCreatingRecordInDB) Error() string {
 	return fmt.Sprintf("Error creating %s", e.Model)
 }
 
-type UpdateError struct {
+type ErrorUpdatingRecordInDB struct {
 	Model string
 	ID    string
 }
 
-func (e UpdateError) Error() string {
+func (e ErrorUpdatingRecordInDB) Error() string {
 	return fmt.Sprintf("Error updating %s with id: %s", e.Model, e.ID)
 }
 
-type FindError struct {
+type ErrorFindingOneRecordInDB struct {
 	Model string
 	ID    string
 }
 
-func (e FindError) Error() string {
+func (e ErrorFindingOneRecordInDB) Error() string {
 	return fmt.Sprintf("failed to find %s with id '%s'", e.Model, e.ID)
 }
