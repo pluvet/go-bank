@@ -1,4 +1,0 @@
-
-
-	//mock.ExpectExec("INSERT INTO users").WithArgs(AnyTime{}, AnyTime{}, nil, "", "", "").WillReturnResult(sqlmock.NewResult(1, 1))
-	// postgresql no crea con exec sino con query porque es capaz de devolver el id

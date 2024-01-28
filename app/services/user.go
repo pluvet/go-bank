@@ -1,25 +1,39 @@
 package services
 
 import (
-	"github.com/pluvet/go-bank/app/config"
+	"fmt"
+
+	"github.com/pluvet/go-bank/app/eventpublisher"
 	"github.com/pluvet/go-bank/app/events"
-	"github.com/pluvet/go-bank/app/models"
-	"github.com/pluvet/go-bank/app/publisher"
+	"github.com/pluvet/go-bank/app/repositories"
 )
 
-func CreateUser(user *models.User) error {
+type UserService struct {
+	repo           repositories.IUserRepository
+	eventPublisher eventpublisher.EventPublisher
+}
 
-	result := config.DB.Create(&user)
+func NewUserService(repo repositories.IUserRepository, eventPublisher eventpublisher.EventPublisher) *UserService {
+	userService := new(UserService)
+	userService.repo = repo
+	userService.eventPublisher = eventPublisher
+	return userService
+}
 
-	if result.Error != nil {
-		err := new(ErrorCreatingRecordInDB)
-		err.Model = "user"
-		return err
+func (u *UserService) CreateUser(name string, email string, password string) (*int, error) {
+
+	userID, err := u.repo.CreateUser(name, email, password)
+
+	if err != nil {
+		return nil, err
 	}
 
-	var eventUserCreated = events.NewEventUserCreated(user.ID)
-	eventPublisher := publisher.GetEventPublisher()
-	go eventPublisher.NewEvent(eventUserCreated)
+	var eventUserCreated = events.NewEventUserCreated(*userID)
+	eventWasPublished := u.eventPublisher.NewEvent(eventUserCreated)
 
-	return nil
+	if !eventWasPublished {
+		fmt.Printf("eventUserCreated was not published")
+	}
+
+	return userID, nil
 }

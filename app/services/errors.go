@@ -10,7 +10,7 @@ type ErrorCreatingRecordInDB struct {
 
 // ErrorCreatingRecordInDB
 func (e ErrorCreatingRecordInDB) Error() string {
-	return fmt.Sprintf("Error creating %s", e.Model)
+	return fmt.Sprintf("failed to create a new entry in %s", e.Model)
 }
 
 type ErrorUpdatingRecordInDB struct {
@@ -19,7 +19,7 @@ type ErrorUpdatingRecordInDB struct {
 }
 
 func (e ErrorUpdatingRecordInDB) Error() string {
-	return fmt.Sprintf("Error updating %s with id: %s", e.Model, e.ID)
+	return fmt.Sprintf("failed to update %s with id: %s", e.Model, e.ID)
 }
 
 type ErrorFindingOneRecordInDB struct {

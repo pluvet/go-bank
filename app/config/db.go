@@ -17,4 +17,5 @@ func Connect() {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Account{})
 	DB = db
+	DB.Statement.RaiseErrorOnNotFound = true
 }

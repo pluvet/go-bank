@@ -1,6 +1,7 @@
 package eventpublisher
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -9,7 +10,7 @@ type Event interface {
 }
 
 type Handler interface {
-	HandleEvent(Event, *sync.WaitGroup)
+	HandleEvent(Event) error
 }
 
 type EventPublisher struct {
@@ -22,13 +23,26 @@ func NewEventPublisher(handlers map[string][]Handler) *EventPublisher {
 	return eventPublisher
 }
 
-func (e *EventPublisher) NewEvent(event Event) {
+func (e *EventPublisher) NewEvent(event Event) bool {
+	eventWasPublished := make(chan bool)
+	go e.processEvent(event, eventWasPublished)
+	return <-eventWasPublished
+}
+
+func (e *EventPublisher) processEvent(event Event, eventWasPublished chan bool) {
 	var wg sync.WaitGroup
 	eventHandlers := e.handlers[event.GetName()]
 	for i := range eventHandlers {
-		wg.Add(1)
 		var handler = eventHandlers[i]
-		go handler.HandleEvent(event, &wg)
+		go e.handleEvent(handler, event, &wg)
 	}
+	eventWasPublished <- true
 	wg.Wait()
+}
+
+func (e *EventPublisher) handleEvent(handler Handler, event Event, wg *sync.WaitGroup) {
+	defer wg.Done()
+	wg.Add(1)
+	err := handler.HandleEvent(event)
+	fmt.Println(err)
 }

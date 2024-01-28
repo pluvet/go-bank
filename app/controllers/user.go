@@ -1,25 +1,37 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/pluvet/go-bank/app/models"
+	"github.com/pluvet/go-bank/app/publisher"
+	"github.com/pluvet/go-bank/app/repositories"
 	"github.com/pluvet/go-bank/app/services"
 )
 
+type CreateUserInputDTO struct {
+	Name     string
+	Email    string
+	Password string
+}
+
+type CreateUserOutputDTO struct {
+	ID int
+}
+
 func CreateUser(c *gin.Context) {
-	var user models.User
+	var user CreateUserInputDTO
 	c.BindJSON(&user)
-	err := services.CreateUser(&user)
+	userService := services.NewUserService(new(repositories.UserRepository), *publisher.GetEventPublisher())
+	userID, err := userService.CreateUser(user.Name, user.Email, user.Password)
 	if err != nil {
 		switch err.(type) {
-		case *services.ErrorCreatingRecordInDB:
-			c.JSON(http.StatusInternalServerError, err.Error())
+		case *repositories.ErrorCreatingRecordInDB:
+			c.JSON(500, err.Error())
 		default:
-			c.JSON(http.StatusInternalServerError, "Internal Server Error")
+			c.JSON(500, "Internal Server Error")
 		}
 	}
+	userOutputDTO := new(CreateUserOutputDTO)
+	userOutputDTO.ID = *userID
 
-	c.JSON(200, &user)
+	c.JSON(201, userOutputDTO)
 }
